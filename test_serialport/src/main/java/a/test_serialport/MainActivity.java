@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_open:
                 try {
                     serialPort = new SerialPort(new File("/dev/ttyS2"), 9600, 0);
+                    fileOutputStream = (FileOutputStream) serialPort.getOutputStream();
+                    fileInputStream = (FileInputStream) serialPort.getInputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
