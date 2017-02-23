@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         onDataReceived(buffer, size);
                     }
 
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
