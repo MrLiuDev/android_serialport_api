@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import android_serialport_api.SerialPortFinder;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btnOpen, btnRead;
     private TextView tvRead;
+    private ScrollView scrollView;
 
     private FileOutputStream fileOutputStream;
     private FileInputStream fileInputStream;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "TAG";
     private byte[] buffer;
     private ReadThread readThread;
+    private int i = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnOpen = (Button) findViewById(R.id.btn_open);
         btnRead = (Button) findViewById(R.id.btn_read);
         tvRead = (TextView) findViewById(R.id.tv_read);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         findViewById(R.id.btn_get_devices).setOnClickListener(this);
         btnOpen.setOnClickListener(this);
         btnRead.setOnClickListener(this);
@@ -108,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvRead.append(byteArrayToHex(buffer, size).toUpperCase()+"\n");
+                tvRead.append(i++ +", "+byteArrayToHex(buffer, size).toUpperCase()+"\n");
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
     }
