@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "TAG";
     private byte[] buffer;
+    private ReadThread readThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_get_devices).setOnClickListener(this);
         btnOpen.setOnClickListener(this);
         btnRead.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (readThread != null) {
+            readThread = null;
+        }
     }
 
     @Override
@@ -76,32 +84,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * 读取串口数据
+     * 启动线程接收数据
      */
     private void readReceivedData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    buffer = new byte[64];
-                    if (fileInputStream == null) return;
-                    try {
-                        size = fileInputStream.read(buffer);
-                        Log.d(TAG, "size:"+size);
-                        if (size > 0) {
-                            onDataReceived(buffer, size);
-                        }
-
-                        Thread.sleep(1000);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        }).start();
+        if (readThread == null) {
+            readThread = new ReadThread();
+            readThread.start();
+        }
     }
 
     /**
@@ -143,5 +132,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String[] paths = finder.getAllDevicesPath();
         Log.d(TAG, Arrays.toString(devices));
         Log.d(TAG, Arrays.toString(paths));
+    }
+
+    /**
+     * 接收串口数据的线程；因为串口设备每秒发一次数据，这里一直接收。
+     */
+    class ReadThread extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                buffer = new byte[64];
+                if (fileInputStream == null) return;
+                try {
+                    size = fileInputStream.read(buffer);
+                    Log.d(TAG, "size:"+size);
+                    if (size > 0) {
+                        onDataReceived(buffer, size);
+                    }
+
+                    Thread.sleep(1000);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 }
