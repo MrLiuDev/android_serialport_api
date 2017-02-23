@@ -46,9 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (readThread != null) {
             readThread = null;
         }
+        fileInputStream = null;
+        fileOutputStream = null;
     }
 
     @Override
@@ -87,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 启动线程接收数据
      */
     private void readReceivedData() {
+        if (fileInputStream == null) {
+            return;
+        }
         if (readThread == null) {
             readThread = new ReadThread();
             readThread.start();
@@ -140,9 +146,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     class ReadThread extends Thread {
         @Override
         public void run() {
+            buffer = new byte[64];
             while (true) {
-                buffer = new byte[64];
-                if (fileInputStream == null) return;
                 try {
                     size = fileInputStream.read(buffer);
                     Log.d(TAG, "size:"+size);
