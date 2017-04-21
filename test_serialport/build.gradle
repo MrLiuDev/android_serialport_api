@@ -31,5 +31,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // Guava: Google Core Libraries for Java
-    compile 'com.google.guava:guava:21.0'
+    //compile 'com.google.guava:guava:21.0'
 }

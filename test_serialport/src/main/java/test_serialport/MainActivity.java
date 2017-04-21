@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int size;
     private SerialPortFinder finder;
 
-    private static final String TAG = "TAG";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private byte[] buffer;
     private ReadThread readThread;
     private int i = 1;
